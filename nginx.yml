@@ -4,4 +4,4 @@ services:
     app:
         image: nginx
         ports:             
-        - "8084:84"
+        - "8089:89"
