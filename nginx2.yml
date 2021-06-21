@@ -4,6 +4,6 @@ services:
   app:
     image: nginx:alpine
     volumes:
-      - nginxVol:/var
+      - nginxVol2:/var
 volumes:
-  nginxVol:
+  nginxVol2:
