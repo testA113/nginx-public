@@ -2,7 +2,7 @@ version: '3'
 
 services:
   app:
-    image: nginxsda:alpine
+    image: nginx:alpine
     volumes:
       - nginxVol2:/var
 volumes:
