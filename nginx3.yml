@@ -3,5 +3,3 @@ version: '3.8'
 services:
     app:
         image: nginx
-        ports:             
-        - "8089:89"
