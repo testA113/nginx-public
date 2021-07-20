@@ -1,9 +1,5 @@
-version: '3'
+version: '2'
 
 services:
   app:
     image: nginx:alpine
-    volumes:
-      - nginxVol2:/var
-volumes:
-  nginxVol2:
