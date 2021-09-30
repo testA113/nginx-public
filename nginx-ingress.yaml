@@ -41,7 +41,7 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: nginx-dev-ingress
-  namespace: dev
+  namespace: hello-namespace
 spec:
   rules:
   - host: 20.92.193.34.nip.io
