@@ -10,4 +10,4 @@ metadata:
   namespace: hello-namespace
 spec:
   rules:
-  - host: 20.92.193.34:9000.nip.io
+  - host: 20.92.193.34.nip.io
