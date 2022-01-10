@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: hello-namespace
+  name: ns1
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: hello-ingress
-  namespace: hello-namespace
+  namespace: ns1
 spec:
   rules:
-  - host: 20.92.193.34.nip.io
+  - host: abc.com

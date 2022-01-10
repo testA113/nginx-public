@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-dev-deployment
-  namespace: hello-namespace
+  namespace: dev
   labels:
     app: nginx-dev-label
 spec:
@@ -29,11 +29,10 @@ kind: Service
 metadata:
   name: nginx-dev-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: nginx-dev-label
   ports:
-    - name: http
-      protocol: TCP
-      port: 93
-      targetPort: 80
+  - nodePort: 30093
+    port: 92
+    targetPort: 80
