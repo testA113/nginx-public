@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: manifest-nginx-git-public
+  name: manifest-nginx
   labels:
     app: nginx
   namespace: default
