@@ -50,4 +50,4 @@ spec:
       - path: /
         backend:
           serviceName: nginx-dev-service
-          servicePort: 92
+          servicePort: 30093
