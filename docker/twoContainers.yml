@@ -3,8 +3,8 @@ services:
   svc1:
     image: nginx
     ports:
-      - 1111:80
+      - 1112:80
   svc2:
     image: caddy
     ports:
-      - 2222:80
+      - 2223:80
