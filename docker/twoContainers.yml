@@ -7,4 +7,4 @@ services:
   svc2:
     image: caddy
     ports:
-      - 2223:80
+      - 2224:80
