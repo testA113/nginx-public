@@ -4,7 +4,6 @@ metadata:
   name: manifest-nginx
   labels:
     app: nginx
-  namespace: default
 spec:
   replicas: 3
   selector:
