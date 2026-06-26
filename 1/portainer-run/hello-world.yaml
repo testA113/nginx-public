@@ -137,10 +137,10 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: hello-world.k0s-4cd5538a19b8-01.internal.portainercloud.io
+    - host: k0s-4cd5538a19b8-01.internal.portainercloud.io
       http:
         paths:
-          - path: /
+          - path: /hello-world
             pathType: Prefix
             backend:
               service:
