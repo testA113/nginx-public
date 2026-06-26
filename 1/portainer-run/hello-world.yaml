@@ -111,10 +111,39 @@ metadata:
     portainer-run/git-path: 1/portainer-run/hello-world.yaml
     portainer-run/vibe-source-path: 1/portainer-run/hello-world/src
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: hello-world
   ports:
     - port: 3000
       targetPort: 3000
       protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-world
+  namespace: portainer-run
+  labels:
+    app: hello-world
+    managed-by: portainer-run
+  annotations:
+    portainer-run/deploy-type: vibe
+    portainer-run/git-target-id: a291fac1-c1ca-408d-9795-0c4c5561cbb6
+    portainer-run/git-branch: main
+    portainer-run/git-path: 1/portainer-run/hello-world.yaml
+    portainer-run/vibe-source-path: 1/portainer-run/hello-world/src
+    kubernetes.io/ingress.class: nginx
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: hello-world.k0s-4cd5538a19b8-01.internal.portainercloud.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-world
+                port:
+                  number: 3000
