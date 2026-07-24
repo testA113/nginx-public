@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wow-data
+  namespace: test
+  labels:
+    app: wow
+    managed-by: portainer-run
+  annotations:
+    portainer-run/deploy-type: vibe
+    portainer-run/git-target-id: 8db9da58-76f0-4250-8da9-2697a7f62ad8
+    portainer-run/git-branch: main
+    portainer-run/git-path: local/test/wow.yaml
+    portainer-run/vibe-source-path: 4/portainer-run/hello-world
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wow
+  namespace: test
+  labels:
+    app: wow
+    managed-by: portainer-run
+  annotations:
+    portainer-run/deploy-type: vibe
+    portainer-run/git-target-id: 8db9da58-76f0-4250-8da9-2697a7f62ad8
+    portainer-run/git-branch: main
+    portainer-run/git-path: local/test/wow.yaml
+    portainer-run/vibe-source-path: 4/portainer-run/hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wow
+  template:
+    metadata:
+      labels:
+        app: wow
+        managed-by: portainer-run
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      initContainers:
+        - name: vibe-sync
+          image: alpine/git:latest
+          command:
+            - sh
+            - '-c'
+            - >-
+              git config --global http.sslVerify false && git clone --depth 1 --branch main
+              https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/testa113/nginx-public /tmp/repo && mkdir -p
+              /usr/share/nginx/html && cp -r /tmp/repo/4/portainer-run/hello-world/. /usr/share/nginx/html/ && rm -rf
+              /tmp/repo
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+          volumeMounts:
+            - name: app-data
+              mountPath: /usr/share/nginx/html
+          env:
+            - name: GIT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: wow-git-credentials
+                  key: username
+            - name: GIT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: wow-git-credentials
+                  key: token
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+      containers:
+        - name: wow
+          image: nginxinc/nginx-unprivileged:alpine
+          command:
+            - sh
+            - '-c'
+            - nginx -g 'daemon off;'
+          workingDir: /usr/share/nginx/html
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: app-data
+              mountPath: /usr/share/nginx/html
+          resources:
+            requests:
+              cpu: 100m
+              memory: 1Gi
+            limits:
+              cpu: '1'
+              memory: 4Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: app-data
+          persistentVolumeClaim:
+            claimName: wow-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wow
+  namespace: test
+  labels:
+    app: wow
+    managed-by: portainer-run
+  annotations:
+    portainer-run/deploy-type: vibe
+    portainer-run/git-target-id: 8db9da58-76f0-4250-8da9-2697a7f62ad8
+    portainer-run/git-branch: main
+    portainer-run/git-path: local/test/wow.yaml
+    portainer-run/vibe-source-path: 4/portainer-run/hello-world
+spec:
+  type: LoadBalancer
+  selector:
+    app: wow
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
